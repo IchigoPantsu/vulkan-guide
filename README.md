@@ -4,8 +4,9 @@ buildable [GPU Driven Rendering - Vulkan Guide](https://vkguide.dev/docs/gpudriv
 ## requirements:
 ### Linux (install command in Arch Linux):
   + vulkanSDK (sudo pacman -S vulkan-devel)
-  + sdl2 (sudo pacman -S sdl2)
   + glslc (sudo pacman -S shaderc)
+  + sdl2 (sudo pacman -S sdl2)
+  + assimp (sudo pacman -S assimp)
 ### Windows:
   + TODO:
 
