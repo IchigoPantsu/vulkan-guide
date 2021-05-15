@@ -180,14 +180,17 @@ if (WIN32)
 set(assimp_dir "${CMAKE_CURRENT_SOURCE_DIR}/assimp_build" )
 set(assimp_dll "${CMAKE_CURRENT_SOURCE_DIR}/assimp_build/code/Release/assimp-vc142-mt.dll" )
 set(assimp_lib "${CMAKE_CURRENT_SOURCE_DIR}/assimp_build/code/Release/assimp-vc142-mt.lib" )
+target_include_directories(assimp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/assimp/include" )
+
 elseif (UNIX)
-set(assimp_dir "${CMAKE_CURRENT_SOURCE_DIR}/assimp" )
-set(assimp_lib "${CMAKE_CURRENT_SOURCE_DIR}/assimp/Release/bin/libassimp.so" )
+#set(assimp_dir "${CMAKE_CURRENT_SOURCE_DIR}/assimp" )
+#set(assimp_lib "${CMAKE_CURRENT_SOURCE_DIR}/assimp/Release/bin/libassimp.so" )
+set(assimp_lib "/usr/lib/libassimp.so" )
+target_include_directories(assimp INTERFACE "$usr/include/assimp" )
 endif()
 
 
 #target_include_directories(assimp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/assimp/include" )
-target_include_directories(assimp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/assimp/include" )
 target_link_libraries(assimp INTERFACE "${assimp_lib}" )
 
 ## FMT LIB
