@@ -1,3 +1,6 @@
+#ifndef FRUSTUM_CULL
+#define FRUSTUM_CULL
+
 #include <glm/matrix.hpp>
 
 class Frustum
@@ -115,3 +118,4 @@ inline glm::vec3 Frustum::intersection(const glm::vec3* crosses) const
 		glm::vec3(m_planes[a].w, m_planes[b].w, m_planes[c].w);
 	return res * (-1.0f / D);
 }
+#endif //FRUSTUM_CULL

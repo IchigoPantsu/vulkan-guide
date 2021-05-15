@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef VK_DESCRIPTORS_H
+#define VK_DESCRIPTORS_H
 
 #include <vk_types.h>
 #include <vector>
@@ -104,4 +106,4 @@ namespace vkutil {
 		DescriptorAllocator* alloc;
 	};
 }
-
+#endif //VK_DESCRIPTORS_H

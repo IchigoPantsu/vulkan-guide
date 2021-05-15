@@ -1,4 +1,5 @@
 find_package(Vulkan REQUIRED)
+#for nvdia-texture-tools
 include(ExternalProject)
 
 add_library(vkbootstrap STATIC)
@@ -20,6 +21,7 @@ add_library(lz4 STATIC)
 
 add_subdirectory(gltf)
 
+if (WIN32)
 ExternalProject_Add(nvtools
 SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/nvidia-texture-tools"
 BINARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/nvlibs"
@@ -28,9 +30,7 @@ CMAKE_ARGS -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=${PROJECT_SOURCE_DIR}/libs -DCMAKE_L
 
 add_library(nvtt INTERFACE)
 target_include_directories(nvtt INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/nvidia-texture-tools/src/nvtt")
-
 #set(nvttfolder "${PROJECT_SOURCE_DIR}/libs/Release")
-
 set(nvttfolder "${PROJECT_SOURCE_DIR}/libs/$<IF:$<CONFIG:Debug>,Debug,Release>")
 
 target_link_libraries(nvtt INTERFACE "${nvttfolder}/nvtt.lib")
@@ -46,10 +46,42 @@ target_link_libraries(nvtt INTERFACE "${nvttfolder}/posh.lib")
 target_link_libraries(nvtt INTERFACE "${nvttfolder}/rg_etc1.lib")
 #target_link_libraries(nvtt INTERFACE "${nvttfolder}/squish.lib")
 
+elseif (UNIX)
+set(nvttfolder "${PROJECT_SOURCE_DIR}/libs/$<IF:$<CONFIG:Debug>,Debug,Release>")
+
+ExternalProject_Add(nvtools
+SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/nvidia-texture-tools"
+BINARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/nvlibs"
+CMAKE_ARGS -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=${nvttfolder} -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${nvttfolder} -DCMAKE_CXX_STANDARD=17
+#no Install nvidia-texture-tools
+INSTALL_COMMAND cmake -E echo "skipping install step."
+)
+
+add_library(nvtt INTERFACE)
+target_include_directories(nvtt INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/nvidia-texture-tools/src/nvtt")
+
+#target_link_libraries(nvtt INTERFACE "${nvttfolder}/libnvcore.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libnvtt.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libnvimage.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libbc6h.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libbc7.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libEtcLib.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libnvcore.a")
+#target_link_libraries(nvtt INTERFACE "${nvttfolder}/libnvimage.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libnvmath.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libnvsquish.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libnvthread.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/libposh.a")
+target_link_libraries(nvtt INTERFACE "${nvttfolder}/librg_etc1.a")
+#target_link_libraries(nvtt INTERFACE "${nvttfolder}/../libsquish.a")
+endif()
 
 #add_subdirectory(nvidia-texture-tools)
 
-set(TRACY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tracy" CACHE FILEPATH "Path to Tracy")
+set(TRACY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tracy" 
+    #CACHE FILEPATH "Path to Tracy"
+)
+
 add_library(tracy OBJECT "${TRACY_DIR}/TracyClient.cpp")
 target_include_directories(tracy PUBLIC "${TRACY_DIR}")
 target_compile_definitions(tracy PUBLIC TRACY_ENABLE)
@@ -74,7 +106,7 @@ target_include_directories(lz4 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/lz4" )
 target_include_directories(spirv_reflect PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/spv_reflect" )
 target_include_directories(spirv_reflect PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/spv_reflect/include" )
 target_include_directories(vkbootstrap PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/vkbootstrap" )
-target_link_libraries(vkbootstrap PUBLIC Vulkan::Vulkan)
+target_link_libraries(vkbootstrap PUBLIC Vulkan::Vulkan )
 
 #both vma and glm and header only libs so we only need the include path
 target_include_directories(vma INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/vma" )
@@ -90,10 +122,32 @@ target_sources(tinyobjloader PRIVATE
 
 target_include_directories(tinyobjloader PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader" )
 
-set(sdl2_DIR "SDL_PATH" CACHE FILEPATH "Path to SDL2")
+#
+#set(sdl2_DIR "/usr" CACHE FILEPATH "Path to SDL2")
+#add_library(sdl2 INTERFACE)
+#target_include_directories(sdl2 INTERFACE "${sdl2_DIR}/include" "${sdl2_image_DIR}/include" )
+#target_link_directories(sdl2 INTERFACE "${sdl2_DIR}/lib/x64" "${sdl2_image_DIR}/lib/x64")
+#target_link_libraries(sdl2 INTERFACE SDL2 SDL2main)
+#
+#add_library(imgui STATIC)
+#
+
+# 
+
 add_library(sdl2 INTERFACE)
-target_include_directories(sdl2 INTERFACE "${sdl2_DIR}/include" "${sdl2_image_DIR}/include" )
-target_link_directories(sdl2 INTERFACE "${sdl2_DIR}/lib/x64" "${sdl2_image_DIR}/lib/x64")
+
+if (WIN32)
+set(sdl2_DIR "Path to SDL2" CACHE FILEPATH "Path to SDL2")
+target_include_directories(sdl2 INTERFACE ${sdl2_DIR}/include ${sdl2_image_DIR}/include)
+target_link_directories(sdl2 INTERFACE ${sdl2_DIR}/lib/x64 ${sdl2_image_DIR}/lib/x64)
+elseif (UNIX)
+set(sdl2_DIR "/usr" 
+  #CACHE FILEPATH "/usr"
+)
+target_include_directories(sdl2 INTERFACE ${sdl2_DIR}/include/SDL2 ${sdl2_image_DIR}/include/SDL2)
+target_link_directories(sdl2 INTERFACE ${sdl2_DIR}/lib ${sdl2_image_DIR}/lib)
+endif()
+
 target_link_libraries(sdl2 INTERFACE SDL2 SDL2main)
 
 add_library(imgui STATIC)
@@ -115,29 +169,31 @@ target_sources(imgui PRIVATE
 "${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_impl_sdl.cpp"
 )
 
-target_link_libraries(imgui PUBLIC Vulkan::Vulkan sdl2)
+target_link_libraries(imgui PUBLIC Vulkan::Vulkan sdl2 )
 
 
 target_include_directories(stb_image INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/stb_image" )
 
-add_library(assimp INTERFACE)
+add_library(assimp INTERFACE )
+
+if (WIN32)
+set(assimp_dir "${CMAKE_CURRENT_SOURCE_DIR}/assimp_build" )
+set(assimp_dll "${CMAKE_CURRENT_SOURCE_DIR}/assimp_build/code/Release/assimp-vc142-mt.dll" )
+set(assimp_lib "${CMAKE_CURRENT_SOURCE_DIR}/assimp_build/code/Release/assimp-vc142-mt.lib" )
+elseif (UNIX)
+set(assimp_dir "${CMAKE_CURRENT_SOURCE_DIR}/assimp" )
+set(assimp_lib "${CMAKE_CURRENT_SOURCE_DIR}/assimp/Release/bin/libassimp.so" )
+endif()
 
 
-set(assimp_dir "${CMAKE_CURRENT_SOURCE_DIR}/assimp_build")
-set(assimp_dll "${CMAKE_CURRENT_SOURCE_DIR}/assimp_build/code/Release/assimp-vc142-mt.dll")
-set(assimp_lib "${CMAKE_CURRENT_SOURCE_DIR}/assimp_build/code/Release/assimp-vc142-mt.lib")
-
-
-target_include_directories(assimp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/assimp/include")
+#target_include_directories(assimp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/assimp/include" )
+target_include_directories(assimp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/assimp/include" )
 target_link_libraries(assimp INTERFACE "${assimp_lib}" )
 
-
 ## FMT LIB
-target_include_directories(fmt_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/fmt_lib")
+target_include_directories(fmt_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/fmt_lib" )
 
-file(GLOB FMT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/fmt_lib/fmt/*")
+file(GLOB FMT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/fmt_lib/fmt/*" )
 
-target_sources(fmt_lib PRIVATE ${FMT_FILES})
-
-
+target_sources(fmt_lib PRIVATE "${FMT_FILES}" )
 

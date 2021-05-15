@@ -1,11 +1,11 @@
 ﻿#include <vk_pushbuffer.h>
-
+#include <cstring>
 uint32_t vkutil::PushBuffer::push(void* data, size_t size)
 {
 	uint32_t offset = currentOffset;
 	char* target = (char*)mapped;
 	target += currentOffset;
-	memcpy(target, data, size);
+	std::memcpy(target, data, size);
 	currentOffset += static_cast<uint32_t>(size);
 	currentOffset = pad_uniform_buffer_size(currentOffset);
 

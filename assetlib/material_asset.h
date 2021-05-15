@@ -1,4 +1,6 @@
 #pragma once
+#ifndef MATERIAL_ASSET_H
+#define MATERIAL_ASSET_H
 #include <asset_loader.h>
 
 
@@ -21,3 +23,4 @@ namespace assets {
 
 	AssetFile pack_material(MaterialInfo* info);
 }
+#endif //MATERIAL_ASSET_H

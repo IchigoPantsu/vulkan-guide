@@ -1,4 +1,7 @@
 #pragma once
+#ifndef TEXTURE_ASSET_H
+#define TEXTURE_ASSET_H
+
 #include "asset_loader.h"
 
 namespace assets {
@@ -32,4 +35,7 @@ namespace assets {
 	void unpack_texture_page(TextureInfo* info, int pageIndex ,char* sourcebuffer, char* destination);
 
 	AssetFile pack_texture(TextureInfo* info, void* pixelData);
+
 }
+
+#endif //TEXTURE_ASSET_H

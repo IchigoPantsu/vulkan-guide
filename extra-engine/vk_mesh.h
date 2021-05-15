@@ -1,4 +1,6 @@
 ﻿#pragma once
+#ifndef VK_MESH_H
+#define VK_MESH_H
 
 #include <vk_types.h>
 #include <vector>
@@ -46,3 +48,4 @@ struct Mesh {
 
 	bool load_from_meshasset(const char* filename);
 };
+#endif //VK_MESH_H

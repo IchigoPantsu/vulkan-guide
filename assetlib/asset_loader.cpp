@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <string.h>
+
 using namespace assets;
 bool assets::save_binaryfile(const  char* path, const AssetFile& file)
 {

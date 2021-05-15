@@ -1,6 +1,8 @@
 ﻿// cvars.h : console variable system
 
 #pragma once
+#ifndef CVARS_H
+#define CVARS_H
 
 #include <string_utils.h>
 
@@ -83,3 +85,4 @@ struct AutoCVar_String : AutoCVar<std::string>
 	const char* Get();
 	void Set(std::string&& val);
 };
+#endif //CVARS_H

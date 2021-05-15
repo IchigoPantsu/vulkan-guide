@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef VK_PUSHBUFFER_H
+#define VK_PUSHBUFFER_H
 
 #include <vk_types.h>
 
@@ -31,3 +33,4 @@ namespace vkutil {
 	}
 
 }
+#endif //VK_PUSHBUFFER_H

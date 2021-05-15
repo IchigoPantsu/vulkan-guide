@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef VK_TYPES_H
+#define VK_TYPES_H
 
 #include <vulkan/vulkan.h>
 #include <vk_mem_alloc.h>
@@ -25,6 +27,13 @@ struct AllocatedBuffer : public AllocatedBufferUntyped {
 		_allocation = other._allocation;
 		_size = other._size;
 	}
+	/*
+	AllocatedBuffer(const AllocatedBufferUntyped& other) {
+		_buffer = other._buffer;
+		_allocation = other._allocation;
+		_size = other._size;
+	}
+	*/
 	AllocatedBuffer() = default;
 };
 
@@ -53,3 +62,4 @@ enum class MeshpassType : uint8_t {
 	DirectionalShadow = 3
 };
 
+#endif //endif

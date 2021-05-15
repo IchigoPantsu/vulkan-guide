@@ -1,4 +1,7 @@
 #pragma once
+#ifndef PREFAB_ASSET_H
+#define PREFAB_ASSET_H
+
 #include <asset_loader.h>
 #include <unordered_map>
 
@@ -25,3 +28,4 @@ namespace assets {
 	PrefabInfo read_prefab_info(AssetFile* file);
 	AssetFile pack_prefab(const PrefabInfo& info);
 }
+#endif //PREFAB_ASSET_H

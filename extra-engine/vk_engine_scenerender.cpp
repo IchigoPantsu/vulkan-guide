@@ -164,8 +164,13 @@ void VulkanEngine::ready_mesh_draw(VkCommandBuffer cmd)
 		//if 80% of the objects are dirty, then just reupload the whole thing
 		if (_renderScene.dirtyObjects.size() >= _renderScene.renderables.size() * 0.8)
 		{
-			AllocatedBuffer<GPUObjectData> newBuffer = create_buffer(copySize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-
+			//cannot bind non-const lvalue reference of type ‘AllocatedBufferUntyped&’ to an rvalue of type ‘AllocatedBufferUntyped’
+			//AllocatedBuffer<GPUObjectData> newBuffer = create_buffer(copySize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU); 
+			
+			AllocatedBufferUntyped _newBuffer = create_buffer(copySize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+			AllocatedBuffer<GPUObjectData> newBuffer(_newBuffer); 
+			//AllocatedBuffer<GPUObjectData> newBuffer(create_buffer(copySize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU)); 
+			
 			GPUObjectData* objectSSBO = map_buffer(newBuffer);
 			_renderScene.fill_objectData(objectSSBO);
 			unmap_buffer(newBuffer);
@@ -194,9 +199,16 @@ void VulkanEngine::ready_mesh_draw(VkCommandBuffer cmd)
 			uint64_t intsize = sizeof(uint32_t);
 			uint64_t wordsize = sizeof(GPUObjectData) / sizeof(uint32_t);
 			uint64_t uploadSize = _renderScene.dirtyObjects.size() * wordsize * intsize;
-			AllocatedBuffer<GPUObjectData> newBuffer = create_buffer(buffersize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-			AllocatedBuffer<uint32_t> targetBuffer = create_buffer(uploadSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-
+			//error: cannot bind non-const lvalue reference of type ‘AllocatedBufferUntyped&’ to an rvalue of type ‘AllocatedBufferUntyped’
+			//AllocatedBuffer<GPUObjectData> newBuffer = create_buffer(buffersize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+			AllocatedBufferUntyped _newBuffer = create_buffer(buffersize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+			AllocatedBuffer<GPUObjectData> newBuffer(_newBuffer);
+			
+			//error: cannot bind non-const lvalue reference of type ‘AllocatedBufferUntyped&’ to an rvalue of type ‘AllocatedBufferUntyped’
+			//AllocatedBuffer<uint32_t> targetBuffer = create_buffer(uploadSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+			AllocatedBufferUntyped _targetBuffer = create_buffer(uploadSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+			AllocatedBuffer<uint32_t> targetBuffer(_targetBuffer);
+			
 			get_current_frame()._frameDeletionQueue.push_function([=]() {
 
 				vmaDestroyBuffer(_allocator, newBuffer._buffer, newBuffer._allocation);
@@ -299,15 +311,13 @@ void VulkanEngine::ready_mesh_draw(VkCommandBuffer cmd)
 		if (pass.needsIndirectRefresh && pass.batches.size() > 0)
 		{
 			ZoneScopedNC("Refresh Indirect Buffer", tracy::Color::Red);
-
-			AllocatedBuffer<GPUIndirectObject> newBuffer = create_buffer(sizeof(GPUIndirectObject) * pass.batches.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-
+			//error: cannot bind non-const lvalue reference of type ‘AllocatedBufferUntyped&’ to an rvalue of type ‘AllocatedBufferUntyped’
+			//AllocatedBuffer<GPUIndirectObject> newBuffer = create_buffer(sizeof(GPUIndirectObject) * pass.batches.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+			AllocatedBufferUntyped _newBuffer = create_buffer(sizeof(GPUIndirectObject) * pass.batches.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+			AllocatedBuffer<GPUIndirectObject> newBuffer(_newBuffer);
 			GPUIndirectObject* indirect = map_buffer(newBuffer);
 
-			
-
 			async_calls.push_back(std::async(std::launch::async, [=] { 
-				
 				
 				pScene->fill_indirectArray(indirect, *ppass);
 				
@@ -338,11 +348,12 @@ void VulkanEngine::ready_mesh_draw(VkCommandBuffer cmd)
 		{
 			ZoneScopedNC("Refresh Instancing Buffer", tracy::Color::Red);
 
-			AllocatedBuffer<GPUInstance> newBuffer = create_buffer(sizeof(GPUInstance) * pass.flat_batches.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-
+			//error: cannot bind non-const lvalue reference of type ‘AllocatedBufferUntyped&’ to an rvalue of type ‘AllocatedBufferUntyped’
+			//AllocatedBuffer<GPUInstance> newBuffer = create_buffer(sizeof(GPUInstance) * pass.flat_batches.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+			AllocatedBufferUntyped _newBuffer = create_buffer(sizeof(GPUInstance) * pass.flat_batches.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+			AllocatedBuffer<GPUInstance> newBuffer(_newBuffer);	
 			GPUInstance* instanceData = map_buffer(newBuffer);
 			async_calls.push_back(std::async(std::launch::async, [=] {
-
 
 				pScene->fill_instancesArray(instanceData, *ppass);
 

@@ -1,4 +1,7 @@
 #pragma once
+#ifndef ASSET_LOADER_H 
+#define ASSET_LOADER_H 
+
 #include <vector>
 #include <string>
 
@@ -21,3 +24,5 @@ namespace assets {
 
 	assets::CompressionMode parse_compression(const char* f);
 }
+
+#endif //ASSET_LOADER_H

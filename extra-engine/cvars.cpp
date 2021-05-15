@@ -145,6 +145,10 @@ public:
 	template<typename T>
 	CVarArray<T>* GetCVarArray();
 
+	//In g++
+	//If you create a class member function as a template function and then specialize it,
+	//the specialization must be done outside the class, including the specialization declaration.
+	/*
 	template<>
 	CVarArray<int32_t>* GetCVarArray()
 	{
@@ -160,6 +164,7 @@ public:
 	{
 		return &stringCVars;
 	}
+	*/
 
 	//templated get-set cvar versions for syntax sugar
 	template<typename T>
@@ -198,6 +203,26 @@ private:
 
 	std::vector<CVarParameter*> cachedEditParameters;
 };
+
+//In g++
+//If you create a class member function as a template function and then specialize it,
+//the specialization must be done outside the class, including the specialization declaration.
+template<>
+CVarArray<int32_t>* CVarSystemImpl::GetCVarArray()
+{
+	return &intCVars2;
+}
+template<>
+CVarArray<double>* CVarSystemImpl::GetCVarArray()
+{
+	return &floatCVars;
+}
+template<>
+CVarArray<std::string>* CVarSystemImpl::GetCVarArray()
+{
+	return &stringCVars;
+}
+
 
 double* CVarSystemImpl::GetFloatCVar(StringUtils::StringHash hash)
 {
@@ -609,7 +634,9 @@ void CVarSystemImpl::EditParameter(CVarParameter* p, float textWidth)
 		{
 			std::string displayFormat = p->name + "= %s";
 			ImGui::PushID(p->name.c_str());
-			ImGui::Text(displayFormat.c_str(), GetCVarArray<std::string>()->GetCurrent(p->arrayIndex));
+			//in clang
+			//error: cannot pass object of non-trivial type 'std::__cxx11::basic_string<char>' through variadic function; call will abort at runtime [-Wnon-pod-varargs]
+			ImGui::Text(displayFormat.c_str(), GetCVarArray<std::string>()->GetCurrent(p->arrayIndex).c_str());
 
 			ImGui::PopID();
 		}

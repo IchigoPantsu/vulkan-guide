@@ -1,4 +1,6 @@
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "-Wall -g")
+
 # Add source to this project's executable.
 add_library (assetlib STATIC 
 "mesh_asset.h"

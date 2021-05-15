@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef VK_TEXTURES_H
+#define VK_TEXTURES_H
 
 #include <vk_types.h>
 #include <vk_engine.h>
@@ -21,3 +23,5 @@ namespace vkutil {
 
 	AllocatedImage upload_image_mipmapped(int texWidth, int texHeight, VkFormat image_format, VulkanEngine& engine, AllocatedBufferUntyped& stagingBuffer, std::vector<MipmapInfo> mips);
 }
+
+#endif //VK_TEXTURES_H

@@ -1,4 +1,7 @@
 #pragma once
+#ifndef MESH_ASSET_H
+#define MESH_ASSET_H
+
 #include <asset_loader.h>
 
 
@@ -55,3 +58,4 @@ namespace assets {
 
 	MeshBounds calculateBounds(Vertex_f32_PNCV* vertices, size_t count);
 }
+#endif //MESH_ASSET_H

@@ -1,4 +1,7 @@
 ﻿#pragma once
+#ifndef LOGGER_H 
+#define LOGGER_H
+
 #include <string_view>
 #include "fmt/core.h"
 #include "fmt/os.h"
@@ -86,3 +89,4 @@ public:
 
 	std::chrono::time_point<std::chrono::system_clock> start_time;
 };
+#endif //LOGGER_H

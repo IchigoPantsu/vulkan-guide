@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef VK_SCENE_H
+#define VK_SCENE_H
 
 #include <vk_types.h>
 #include <vk_scene.h>
@@ -188,4 +190,4 @@ public:
 
 	AllocatedBuffer<GPUObjectData> objectDataBuffer;
 };
-
+#endif //VK_SCENE_H

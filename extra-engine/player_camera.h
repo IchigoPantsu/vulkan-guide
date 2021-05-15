@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef PLAYER_CAMERA_H
+#define PLAYER_CAMERA_H
 
 #include <vk_types.h>
 
@@ -28,3 +30,4 @@ struct PlayerCamera {
 	glm::mat4 get_projection_matrix(bool bReverse = true);
 	glm::mat4 get_rotation_matrix();
 };
+#endif //PLAYER_CAMERA_H

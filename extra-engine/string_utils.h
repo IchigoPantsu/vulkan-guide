@@ -1,4 +1,7 @@
-﻿#include <string>
+﻿#ifndef STRING_UTILS_H 
+#define STRING_UTILS_H
+
+#include <string>
 #include <string_view>
 #include <cstdint>
 
@@ -41,3 +44,4 @@ namespace StringUtils {
 	};
 
 }
+#endif //STRING_UTILS_H

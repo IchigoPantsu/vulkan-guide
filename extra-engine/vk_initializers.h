@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef VK_INITIALIZERS_H
+#define VK_INITIALIZERS_H
 
 #include <vk_types.h>
 
@@ -57,4 +59,4 @@ namespace vkinit {
 
 	VkImageMemoryBarrier image_barrier(VkImage image, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask, VkImageLayout oldLayout, VkImageLayout newLayout, VkImageAspectFlags aspectMask);
 }
-
+#endif //VK_INITIALIZERS_H

@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef VK_SHADERS_H 
+#define VK_SHADERS_H
 
 #include <vk_types.h>
 #include <vector>
@@ -103,3 +105,4 @@ private:
 	VkDevice _device;
 	std::unordered_map<std::string, ShaderModule> module_cache;
 };
+#endif //VK_SHADERS_H

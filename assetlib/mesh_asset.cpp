@@ -2,7 +2,7 @@
 #include "json.hpp"
 #include "lz4.h"
 
-
+namespace mesh_asset{
 assets::VertexFormat parse_format(const char* f) {
 
 	if (strcmp(f, "PNCV_F32") == 0)
@@ -17,6 +17,7 @@ assets::VertexFormat parse_format(const char* f) {
 	{
 		return assets::VertexFormat::Unknown;
 	}
+}
 }
 
 assets::MeshInfo assets::read_mesh_info(AssetFile* file)
@@ -49,7 +50,7 @@ assets::MeshInfo assets::read_mesh_info(AssetFile* file)
 	info.bounds.extents[2] = boundsData[6];
 
 	std::string vertexFormat = metadata["vertex_format"];
-	info.vertexFormat = parse_format(vertexFormat.c_str());
+	info.vertexFormat = mesh_asset::parse_format(vertexFormat.c_str());
     return info;
 }
 

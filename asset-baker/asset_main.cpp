@@ -22,13 +22,16 @@
 #include <nvtt.h>
 
 #include <glm/glm.hpp>
-#include<glm/gtx/transform.hpp>
+#include <glm/gtx/transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+
+#include <iostream>
+#include <string>
+
 namespace fs = std::filesystem;
 
 using namespace assets;
@@ -463,19 +466,25 @@ void extract_gltf_indices(tinygltf::Primitive& primitive, tinygltf::Model& model
 
 std::string calculate_gltf_mesh_name(tinygltf::Model& model, int meshIndex, int primitiveIndex)
 {
-	char buffer0[50];
-	char buffer1[50];
-	itoa(meshIndex, buffer0, 10);
-	itoa(primitiveIndex, buffer1, 10);
+	//char buffer0[50];
+	//char buffer1[50];
+	std::string buffer0;
+	std::string buffer1;
 
-	std::string meshname = "MESH_" + std::string{ &buffer0[0] } + "_" + model.meshes[meshIndex].name;
+  //itoa(meshIndex, buffer0, 10);
+	//itoa(primitiveIndex, buffer1, 10);
+	//sprintf(meshIndex, buffer0, 10);
+	//sprintf(primitiveIndex, buffer1, 10);
+	buffer0 = std::to_string(meshIndex);
+	buffer1 = std::to_string(primitiveIndex);
 
+	//std::string meshname = "MESH_" + std::string{ &buffer0[0] } + "_" + model.meshes[meshIndex].name;
+	std::string meshname = "MESH_" + buffer0 + "_" + model.meshes[meshIndex].name;
 	bool multiprim = model.meshes[meshIndex].primitives.size() > 1;
 	if (multiprim)
 	{
-		meshname += "_PRIM_" + std::string{ &buffer1[0] };
-
-		
+		//meshname += "_PRIM_" + std::string{ &buffer1[0] };
+		meshname += "_PRIM_" + buffer1;
 	}
 	
 	return meshname;
@@ -530,10 +539,15 @@ bool extract_gltf_meshes(tinygltf::Model& model, const fs::path& input, const fs
 
 std::string calculate_gltf_material_name(tinygltf::Model& model, int materialIndex)
 {
-	char buffer[50];
+	//char buffer[50];
+	std::string buffer;
 
-	itoa(materialIndex, buffer, 10);
-	std::string matname = "MAT_" + std::string{ &buffer[0] } + "_" + model.materials[materialIndex].name;
+	//itoa(materialIndex, buffer, 10);
+	//std::sprintf(materialIndex, buffer, 10);
+	buffer = std::to_string(materialIndex);
+
+	//std::string matname = "MAT_" + std::string{ &buffer[0] } + "_" + model.materials[materialIndex].name;
+	std::string matname = "MAT_" + buffer + "_" + model.materials[materialIndex].name;
 	return matname;
 }
 
@@ -796,11 +810,14 @@ void extract_gltf_nodes(tinygltf::Model& model, const fs::path& input, const fs:
 			auto primitive = mesh.primitives[primindex];
 			int newnode = nodeindex++;
 
-			char buffer[50];
+			//char buffer[50];
+			std::string buffer;
+			//itoa(primindex, buffer, 10);
+			//std::sprintf(primindex, buffer, 10);
+			buffer = std::to_string(primindex);
 
-			itoa(primindex, buffer, 10);
-
-			prefab.node_names[newnode] = prefab.node_names[i] +  "_PRIM_" + &buffer[0];
+			//prefab.node_names[newnode] = prefab.node_names[i] +  "_PRIM_" + &buffer[0];
+			prefab.node_names[newnode] = prefab.node_names[i] +  "_PRIM_" + buffer;
 
 			int material = primitive.material;
 			auto mat = model.materials[material];
@@ -831,18 +848,28 @@ void extract_gltf_nodes(tinygltf::Model& model, const fs::path& input, const fs:
 }
 std::string calculate_assimp_mesh_name(const aiScene* scene, int meshIndex)
 {
-	char buffer[50];
+	//char buffer[50];
+	std::string buffer;
 
-	itoa(meshIndex, buffer, 10);
-	std::string matname = "MESH_" + std::string{ buffer } + "_"+ std::string{ scene->mMeshes[meshIndex]->mName.C_Str()};
+	//itoa(meshIndex, buffer, 10);
+	//std::sprintf(meshIndex, buffer, 10);
+	buffer = std::to_string(meshIndex);
+
+	//std::string matname = "MESH_" + std::string{ buffer } + "_"+ std::string{ scene->mMeshes[meshIndex]->mName.C_Str()};
+	std::string matname = "MESH_" + buffer + "_"+ std::string{ scene->mMeshes[meshIndex]->mName.C_Str()};
 	return matname;
 }
 std::string calculate_assimp_material_name(const aiScene* scene, int materialIndex)
 {
-	char buffer[50];
+	//char buffer[50];
+	std::string buffer;
 
-	itoa(materialIndex, buffer, 10);
-	std::string matname = "MAT_" + std::string{ buffer } + "_" + std::string{ scene->mMaterials[materialIndex]->GetName().C_Str() };
+	//itoa(materialIndex, buffer, 10);
+	//std::sprintf(materialIndex, buffer, 10);
+	buffer = std::to_string(materialIndex);
+
+	//std::string matname = "MAT_" + std::string{ buffer } + "_" + std::string{ scene->mMaterials[materialIndex]->GetName().C_Str() };
+	std::string matname = "MAT_" + buffer + "_" + std::string{ scene->mMaterials[materialIndex]->GetName().C_Str() };
 	return matname;
 }
 void extract_assimp_materials(const aiScene* scene, const fs::path& input, const fs::path& outputFolder, const ConverterState& convState)
@@ -1144,7 +1171,8 @@ int main(int argc, char* argv[])
 		std::cout << "You need to put the path to the info file";
 		return -1;
 	}
-	else {
+	else 
+	{
 		
 		fs::path path{ argv[1] };
 	
@@ -1171,23 +1199,24 @@ int main(int argc, char* argv[])
 				fs::create_directory(export_path.parent_path());
 			}
 
-			//if (p.path().extension() == ".png" || p.path().extension() == ".jpg" || p.path().extension() == ".TGA")
-			//{
-			//	std::cout << "found a texture" << std::endl;
-			//
-			//	auto newpath = p.path();
-			//
-			//
-			//	export_path.replace_extension(".tx");
-			//
-			//	convert_image(p.path(), export_path);
-			//}
-			//if (p.path().extension() == ".obj") {
-			//	std::cout << "found a mesh" << std::endl;
-			//
-			//	export_path.replace_extension(".mesh");
-			//	convert_mesh(p.path(), export_path);
-			//}
+			if (p.path().extension() == ".png" || p.path().extension() == ".jpg" || p.path().extension() == ".TGA")
+			{
+				std::cout << "found a texture" << std::endl;
+			
+				auto newpath = p.path();
+			
+			
+				export_path.replace_extension(".tx");
+			
+				convert_image(p.path(), export_path);
+			}
+			if (p.path().extension() == ".obj") {
+				std::cout << "found a mesh" << std::endl;
+			
+				export_path.replace_extension(".mesh");
+				convert_mesh(p.path(), export_path);
+			}
+
 			if (p.path().extension() == ".gltf")
 			{
 				using namespace tinygltf;

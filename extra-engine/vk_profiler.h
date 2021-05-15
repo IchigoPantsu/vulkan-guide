@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef VK_PROFILER_H
+#define VK_PROFILER_H
 
 #include <vk_types.h>
 #include <vector>
@@ -92,4 +94,4 @@ namespace vkutil {
 		
 	};
 }
-
+#endif //VK_PROFILER_H

@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef VK_ENGINE_H 
+#define VK_ENGINE_H
 
 #include <vk_types.h>
 #include <vector>
@@ -427,3 +429,4 @@ T* VulkanEngine::map_buffer(AllocatedBuffer<T>& buffer)
 	vmaMapMemory(_allocator, buffer._allocation, &data);
 	return(T*)data;
 }
+#endif //VK_ENGINE_H

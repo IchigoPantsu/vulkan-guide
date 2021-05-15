@@ -2,6 +2,8 @@
 // or project specific include files.
 
 #pragma once
+#ifndef MATERIAL_SYMBOL_H
+#define MATERIAL_SYMBOL_H
 
 #include <vk_types.h>
 #include <vector>
@@ -167,4 +169,4 @@ namespace vkutil {
 		VulkanEngine* engine;
 	};
 }
-
+#endif //MATERIAL_SYMBOL_H
